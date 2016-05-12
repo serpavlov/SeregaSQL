@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
             {
                 string temp,result;
                 myFile>>temp;
-                result+=temp;
+                result+=temp+" ";
                 SWITCH (temp)
                 {
                     CASE ("create"):
@@ -35,14 +35,14 @@ int main(int argc, char* argv[])
                             string table_name;
                             getline(myFile,table_name,'(');
                             getline(myFile,temp,')');
-                            result+=table_name;
+                            result+=table_name+" ";
                             result+=temp;
                             create_table(table_name,temp);
                         }
                         break;
                     CASE ("delete"):
                         myFile>>temp;
-                        result+=temp;
+                        result+=temp+" ";
                         if (temp =="table")
                         {
                             myFile>>temp;
@@ -56,7 +56,6 @@ int main(int argc, char* argv[])
                         result+=temp;
                         if (temp =="into")
                         {
-                            result+=temp;
                             string table_name;
                             getline(myFile,table_name,'(');
                             getline(myFile,temp,')');
@@ -67,7 +66,7 @@ int main(int argc, char* argv[])
                         break;
                     DEFAULT:
                         error(1);
-
+                        break;
                 }
                 //QString temp1=QString::fromStdString(temp);
                 //string temp2=temp1.toStdString();
