@@ -1,3 +1,4 @@
-lololo kek
-create table ss(name:string,year:int)
-ppepep
+delete table ss
+create table ss(name:string,year:int,fuck:real)
+insert into ss(lalka,19,3.14)
+insert into ss(lol,1488,14)
