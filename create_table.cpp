@@ -86,7 +86,7 @@ my_column* get_parameters(string line)
 int create_table(string name, string scolumns)
 {
     ofstream out;
-    out.open(name,ios_base::out | ios_base::trunc);
+    out.open(name,ios_base::trunc);
     if (out.is_open())
     {
         my_column* columns = get_parameters(scolumns);
@@ -190,7 +190,6 @@ void delete_row(string name, string parameter)
     {
         string scolumns;
         getline(in,scolumns);
-        //in.close();
         my_column* columns = get_parameters(scolumns);
         string column,key;
         int n=0;
