@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <cstdio>
 #include "my_column.h"
 //#include "errors.cpp"
 
@@ -11,8 +12,10 @@ void error(int e)
 
 void delete_table(string tablename)
 {
-    cout<<tablename<<" "<<tablename.c_str()<<endl;
-    if (remove(tablename.c_str())==-1)
+    ofstream out;
+    out.open(tablename, ios_base::trunc);
+    out.close();
+    if (remove(tablename.c_str())!=0)
         error(12);
     else
         cout<<"table "<<tablename<<" deleted"<<endl;
@@ -20,14 +23,14 @@ void delete_table(string tablename)
 bool is_valid_type(string stype)
 {
     string* types = new string[3];
-    types[0]='string';
-    types[1]='int';
-    types[2]='real';
+    types[0]="string";
+    types[1]="int";
+    types[2]="real";
     for (int i=0;i<sizeof(types);i++)
     {
         if (stype.compare(types[i])) return true;
     }
-    cout<<'false, lol'<<endl;
+    cout<<"false, lol"<<endl;
     return false;
 }
 
