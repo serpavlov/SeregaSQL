@@ -50,6 +50,30 @@ int main(int argc, char* argv[])
                             //cout<<result;
                             delete_table(temp);
                         }
+                        if (temp == "row")
+                        {
+                            myFile>>temp;
+                            result+=temp;
+                            if (temp == "from")
+                            {
+                                string table_name;
+                                myFile>>table_name;
+                                result+=table_name;
+                                ifstream temp_table;
+                                temp_table.open(table_name,ios_base::in);
+                                if (temp_table.is_open())
+                                {
+                                    temp_table.close();
+                                    myFile>>temp;
+                                    result+=temp;
+                                    if (temp=="where")
+                                    {
+                                        getline(myFile,temp);
+                                        delete_row(table_name,temp);
+                                    }
+                                }
+                            }
+                        }
                         break;
                     CASE ("insert"):
                         myFile>>temp;

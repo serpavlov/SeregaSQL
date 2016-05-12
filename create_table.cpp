@@ -181,3 +181,87 @@ int insert_row(string name, string srow)
     else error(3);
     return 0;
 }
+
+void delete_row(string name, string parameter)
+{
+    ifstream in;
+    in.open(name,ios_base::in);
+    if(in.is_open())
+    {
+        string scolumns;
+        getline(in,scolumns);
+        //in.close();
+        my_column* columns = get_parameters(scolumns);
+        string column,key;
+        int n=0;
+        for (int i=0;i<parameter.size();i++)
+        {
+            if (parameter[i]!='=')
+            {
+                column+=parameter[i];
+                n++;
+            }
+        }
+        if (n < parameter.size()-1)
+        {
+            int n_col;
+            for(int i=0;i<columns[0].n;i++)
+            {
+                if (columns[i].name==column) n_col=i;
+            }
+            for (int i=n;i<parameter.size();i++)
+            {
+                 key+=parameter[i];
+            }
+            int n_row=1;
+            string temp;
+            while (!in.eof())
+            {
+                getline(in,temp);
+                int zap_count=0;
+                string key_finder;
+                for (int i=0;i<temp.size();i++)
+                {
+                    if (temp[i]==',')
+                    {
+                        zap_count++;
+                        key_finder.clear();
+                    }
+                    if (zap_count == n_col-1)
+                    {
+                        if (key_finder==key)
+                        {
+                            in.close();
+                            in.open(name,ios_base::in);
+                            ofstream out;
+                            out.open("temp", ios_base::out | ios_base::trunc);
+                           if (in.is_open()&&out.is_open())
+                           {
+                               int i=0;
+                               string temp;
+                               while (!in.eof())
+                               {
+                                   getline(in,temp);
+                                   if (i!=n_row) out<<temp;
+                                   i++;
+                               }
+                               in.close();
+                               out.close();
+                               delete_table(name);
+                               rename("temp",name.c_str());
+                               in.open(name,ios_base :: in);
+                               for (int i=0;i<=n_col;i++)
+                               {
+                                   string temp;
+                                   getline(in,temp);
+                               }
+                           }
+                        }
+                    }
+                    key_finder+=temp[i];
+                }
+                n_row++;
+            }
+        }
+    }
+}
