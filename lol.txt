@@ -1,0 +1,3 @@
+lololo kek
+create table ss(name:string,year:int)
+ppepep
