@@ -11,7 +11,9 @@ void error(int e)
 
 void delete_table(string tablename)
 {
-    if (remove(tablename.c_str())==-1) error(12);
+    cout<<tablename<<" "<<tablename.c_str()<<endl;
+    if (remove(tablename.c_str())==-1)
+        error(12);
     else
         cout<<"table "<<tablename<<" deleted"<<endl;
 }
