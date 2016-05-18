@@ -210,17 +210,18 @@ void delete_row(string name, string parameter)
             {
                 if (columns[i].name==column) n_col=i;
             }
-            cout<<n_col<<endl;
+            //cout<<n_col<<endl;
             for (int i=n+1;i<parameter.size();i++)
             {
                  key+=parameter[i];
             }
-            cout<<key<<endl;
+           //cout<<key<<endl;
             int n_row=1;
             string temp;
             while (!in.eof())
             {
                 getline(in,temp);
+                //cout<<temp<<endl;
                 int zap_count=0;
                 string key_finder;
                 for (int i=0;i<temp.size();i++)
@@ -230,14 +231,20 @@ void delete_row(string name, string parameter)
                         zap_count++;
                         key_finder.clear();
                     }
-                    if (zap_count == n_col-1)
+                    else
+                    {
+                        key_finder+=temp[i];
+                        cout<<key<<key_finder<<endl;
+                    }
+                    if (zap_count == n_col)
                     {
                         if (key_finder==key)
                         {
+                            //key_finder.clear();
                             in.close();
                             in.open(name,ios_base::in);
                             ofstream out;
-                            out.open("temp", ios_base::out | ios_base::trunc);
+                            out.open("temp", ios_base::trunc);
                            if (in.is_open()&&out.is_open())
                            {
                                int i=0;
@@ -245,26 +252,33 @@ void delete_row(string name, string parameter)
                                while (!in.eof())
                                {
                                    getline(in,temp);
-                                   if (i!=n_row) out<<temp;
+                                   if (i!=n_row) out<<temp<<endl;
                                    i++;
                                }
+                               //n_row=1;
+                               in.close();
                                in.close();
                                out.close();
                                delete_table(name);
                                rename("temp",name.c_str());
                                in.open(name,ios_base :: in);
-                               for (int i=0;i<=n_col;i++)
-                               {
-                                   string temp;
-                                   getline(in,temp);
-                               }
+                               if(in.is_open())
+                                {
+                                    for (int i=0;i<n_row;i++)
+                                    {
+                                        string temp;
+                                        getline(in,temp);
+                                    }
+                                }
+                               else error(12345676543);
+                               break;
                            }
                         }
                     }
-                    key_finder+=temp[i];
+                    //key_finder+=temp[i];
                 }
                 n_row++;
             }
-        }
+        }else error(11);
     } else error(12);
 }
