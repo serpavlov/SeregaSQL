@@ -33,6 +33,7 @@ int main(int argc, char* argv[])
                         if (temp =="table")
                         {
                             string table_name;
+                            myFile.get();
                             getline(myFile,table_name,'(');
                             getline(myFile,temp,')');
                             result+=table_name+" ";
@@ -68,10 +69,12 @@ int main(int argc, char* argv[])
                                     result+=temp;
                                     if (temp=="where")
                                     {
+                                        myFile.get();
                                         getline(myFile,temp);
+                                        result+=temp;
                                         delete_row(table_name,temp);
                                     }
-                                }
+                               } else error(1234);
                             }
                         }
                         break;
@@ -81,6 +84,7 @@ int main(int argc, char* argv[])
                         if (temp =="into")
                         {
                             string table_name;
+                            myFile.get();
                             getline(myFile,table_name,'(');
                             getline(myFile,temp,')');
                             insert_row(table_name,temp);

@@ -171,9 +171,9 @@ int insert_row(string name, string srow)
                     if (i<=n-1) out<<',';
                 }
                 out<<endl;
-                out.close();
             }
             else error(3);
+            out.close();
         }
         else error(4);
 
@@ -200,7 +200,9 @@ void delete_row(string name, string parameter)
                 column+=parameter[i];
                 n++;
             }
+            else break;
         }
+        //cout<<n<<endl;
         if (n < parameter.size()-1)
         {
             int n_col;
@@ -208,10 +210,12 @@ void delete_row(string name, string parameter)
             {
                 if (columns[i].name==column) n_col=i;
             }
-            for (int i=n;i<parameter.size();i++)
+            cout<<n_col<<endl;
+            for (int i=n+1;i<parameter.size();i++)
             {
                  key+=parameter[i];
             }
+            cout<<key<<endl;
             int n_row=1;
             string temp;
             while (!in.eof())
@@ -262,5 +266,5 @@ void delete_row(string name, string parameter)
                 n_row++;
             }
         }
-    }
+    } else error(12);
 }
