@@ -74,7 +74,7 @@ my_column* get_parameters(string line)
                         ttype.clear();
                         col_count++;
                     }
-                    else break;
+                    else break;//спорный момент
                 }
             }
         }
@@ -115,10 +115,8 @@ bool check_type(string stype, string srow)
     else if (stype == "real")
     {
         int dot_counter=0;
-        //cout<< srow<<endl;
         for (int i=0;i<srow.size();i++)
         {
-            //cout<< srow[i]<<endl;
             if (!isdigit(srow[i]))
             {
                 if(srow[i]=='.' && dot_counter<1) dot_counter++;
@@ -157,7 +155,6 @@ int insert_row(string name, string srow)
             for (int i=0;i<columns[i].n;i++)
             {
                 if (!check_type(columns[i].type,cols[i])) error(9);
-                //else cout<<"good"<<endl;
             }
             ofstream out;
             out.open(name,ios_base::app);
@@ -237,7 +234,6 @@ void delete_row(string name, string parameter)
                 if (zap_count == n_col)
                 {
                     if (key_finder!=key)
-
                     {
                         out<<temp<<endl;
                     }
