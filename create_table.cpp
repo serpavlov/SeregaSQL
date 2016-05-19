@@ -202,26 +202,27 @@ void delete_row(string name, string parameter)
             }
             else break;
         }
-        //cout<<n<<endl;
         if (n < parameter.size()-1)
         {
             int n_col;
             for(int i=0;i<columns[0].n;i++)
             {
-                if (columns[i].name==column) n_col=i;
+                if (columns[i].name==column) n_col=i+1;
             }
-            //cout<<n_col<<endl;
+            cout<<n_col<<endl;
             for (int i=n+1;i<parameter.size();i++)
             {
                  key+=parameter[i];
             }
-           //cout<<key<<endl;
-            int n_row=1;
-            string temp;
-            while (!in.eof())
+           cout<<key<<endl;
+           string temp;
+           ofstream out;
+           out.open("temp", ios_base::trunc);
+           out<<scolumns<<endl;
+           while (!in.eof())
             {
                 getline(in,temp);
-                //cout<<temp<<endl;
+                cout<<temp<<endl;
                 int zap_count=0;
                 string key_finder;
                 for (int i=0;i<temp.size();i++)
@@ -229,56 +230,33 @@ void delete_row(string name, string parameter)
                     if (temp[i]==',')
                     {
                         zap_count++;
-                        key_finder.clear();
                     }
                     else
+                    if(zap_count+1==n_col)
                     {
                         key_finder+=temp[i];
                         cout<<key<<key_finder<<endl;
                     }
-                    if (zap_count == n_col)
+                    if(zap_count+1>n_col) break;
+                 }
+                if (zap_count == n_col)
+                {
+                    if (key_finder==key)
                     {
-                        if (key_finder==key)
-                        {
-                            //key_finder.clear();
-                            in.close();
-                            in.open(name,ios_base::in);
-                            ofstream out;
-                            out.open("temp", ios_base::trunc);
-                           if (in.is_open()&&out.is_open())
-                           {
-                               int i=0;
-                               string temp;
-                               while (!in.eof())
-                               {
-                                   getline(in,temp);
-                                   if (i!=n_row) out<<temp<<endl;
-                                   i++;
-                               }
-                               //n_row=1;
-                               in.close();
-                               in.close();
-                               out.close();
-                               delete_table(name);
-                               rename("temp",name.c_str());
-                               in.open(name,ios_base :: in);
-                               if(in.is_open())
-                                {
-                                    for (int i=0;i<n_row;i++)
-                                    {
-                                        string temp;
-                                        getline(in,temp);
-                                    }
-                                }
-                               else error(12345676543);
-                               break;
-                           }
-                        }
+                        cout<<"Skip this string\n";
                     }
-                    //key_finder+=temp[i];
-                }
-                n_row++;
-            }
+                    else
+                    {
+                        out<<temp<<endl;
+                        //break;
+                    }
+                 }
+                else cout<<"wddsdsdss";
+               }
+               in.close();
+               out.close();
+               delete_table(name);
+               rename("temp",name.c_str());
         }else error(11);
     } else error(12);
 }
