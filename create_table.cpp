@@ -5,6 +5,7 @@
 //#include "errors.cpp"
 
 using namespace std;
+
 void error(int e)
 {
     cout<<"You have "<<e<<" error"<<endl;
@@ -17,9 +18,8 @@ void delete_table(string tablename)
     out.close();
     if (remove(tablename.c_str())!=0)
         error(12);
-    else
-        cout<<"table "<<tablename<<" deleted"<<endl;
 }
+
 bool is_valid_type(string stype)
 {
     string* types = new string[3];
@@ -30,7 +30,7 @@ bool is_valid_type(string stype)
     {
         if (stype.compare(types[i])) return true;
     }
-    cout<<"false, lol"<<endl;
+    error(9);
     return false;
 }
 
@@ -60,9 +60,8 @@ my_column* get_parameters(string line)
                     tname+=line[i];
                 else search_for=',';
             }
-            else if (search_for == ',' || i>=n)
+            else if (search_for == ',')// || i>=n)
             {
-                //cout<<ttype<<endl;
                 if (line[i]!=search_for && i<n)
                     ttype+=line[i];
                 else
@@ -71,11 +70,11 @@ my_column* get_parameters(string line)
                     if (is_valid_type(ttype) && tname.size()>0)
                     {
                         array[col_count] = my_column(tname,ttype,kol_count);
-                        //cout<<tname<<ttype<<endl;
                         tname.clear();
                         ttype.clear();
                         col_count++;
                     }
+                    else break;//спорный момент
                 }
             }
         }
@@ -86,7 +85,7 @@ my_column* get_parameters(string line)
 int create_table(string name, string scolumns)
 {
     ofstream out;
-    out.open(name,ios_base::trunc);
+    out.open(name,ios_base::out);//можно добавить невозможность перезаписать таблицу
     if (out.is_open())
     {
         my_column* columns = get_parameters(scolumns);
@@ -116,10 +115,8 @@ bool check_type(string stype, string srow)
     else if (stype == "real")
     {
         int dot_counter=0;
-        //cout<< srow<<endl;
         for (int i=0;i<srow.size();i++)
         {
-            //cout<< srow[i]<<endl;
             if (!isdigit(srow[i]))
             {
                 if(srow[i]=='.' && dot_counter<1) dot_counter++;
@@ -158,7 +155,6 @@ int insert_row(string name, string srow)
             for (int i=0;i<columns[i].n;i++)
             {
                 if (!check_type(columns[i].type,cols[i])) error(9);
-                //else cout<<"good"<<endl;
             }
             ofstream out;
             out.open(name,ios_base::app);
@@ -209,12 +205,10 @@ void delete_row(string name, string parameter)
             {
                 if (columns[i].name==column) n_col=i+1;
             }
-            cout<<n_col<<endl;
             for (int i=n+1;i<parameter.size();i++)
             {
                  key+=parameter[i];
             }
-           cout<<key<<endl;
            string temp;
            ofstream out;
            out.open("temp", ios_base::trunc);
@@ -222,7 +216,6 @@ void delete_row(string name, string parameter)
            while (!in.eof())
             {
                 getline(in,temp);
-                cout<<temp<<endl;
                 int zap_count=0;
                 string key_finder;
                 for (int i=0;i<temp.size();i++)
@@ -235,22 +228,16 @@ void delete_row(string name, string parameter)
                     if(zap_count+1==n_col)
                     {
                         key_finder+=temp[i];
-                        cout<<key<<key_finder<<endl;
                     }
                     if(zap_count+1>n_col) break;
                  }
                 if (zap_count == n_col)
                 {
-                    if (key_finder==key)
-                    {
-                        cout<<"Skip this string\n";
-                    }
-                    else
+                    if (key_finder!=key)
                     {
                         out<<temp<<endl;
                     }
                  }
-                else cout<<"wddsdsdss";
                }
                in.close();
                out.close();

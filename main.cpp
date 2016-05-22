@@ -48,7 +48,6 @@ int main(int argc, char* argv[])
                         {
                             myFile>>temp;
                             result+=temp;
-                            //cout<<result;
                             delete_table(temp);
                         }
                         if (temp == "row")
@@ -60,21 +59,15 @@ int main(int argc, char* argv[])
                                 string table_name;
                                 myFile>>table_name;
                                 result+=table_name;
-                                ifstream temp_table;
-                                temp_table.open(table_name,ios_base::in);
-                                if (temp_table.is_open())
+                                myFile>>temp;
+                                result+=temp;
+                                if (temp=="where")
                                 {
-                                    temp_table.close();
-                                    myFile>>temp;
+                                    myFile.get();
+                                    getline(myFile,temp);
                                     result+=temp;
-                                    if (temp=="where")
-                                    {
-                                        myFile.get();
-                                        getline(myFile,temp);
-                                        result+=temp;
-                                        delete_row(table_name,temp);
-                                    }
-                               } else error(1234);
+                                    delete_row(table_name,temp);
+                                }
                             }
                         }
                         break;
@@ -96,8 +89,6 @@ int main(int argc, char* argv[])
                         error(1);
                         break;
                 }
-                //QString temp1=QString::fromStdString(temp);
-                //string temp2=temp1.toStdString();
                 cout<<result<<endl;
             }
         }
