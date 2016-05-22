@@ -248,7 +248,6 @@ void delete_row(string name, string parameter)
                     else
                     {
                         out<<temp<<endl;
-                        //break;
                     }
                  }
                 else cout<<"wddsdsdss";
