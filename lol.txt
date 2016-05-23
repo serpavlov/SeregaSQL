@@ -2,3 +2,5 @@ delete table ss
 create table ss(name:string,year:int,fuck:real)
 insert into ss(lalka,19,3.14)
 insert into ss(lol,1488,14)
+delete row from <table> where <column>=<parametr>
+select <table name1>(<column1>) <table name2>(<column2>,<column3>) where <column1>=<column3> add filter by <column2>=<filter> add sort by <column2> add limit <number>
