@@ -194,7 +194,7 @@ void delete_row(string name, string parameter)
         {
             if (parameter[i]!='=')
             {
-                result[0]+=parameter[n];
+                column+=parameter[n];
             }
             else break;
         }
