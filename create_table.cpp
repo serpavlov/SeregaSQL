@@ -178,6 +178,102 @@ int insert_row(string name, string srow)
     return 0;
 }
 
+string find_column_string(int n, string sstring)
+{
+    string key_finder;
+    int zap_count=0;
+    for (int i=0;i<sstring.size();i++)
+    {
+        if (sstring[i]==',')
+        {
+            zap_count++;
+        }
+        else if(zap_count+1==n)
+        {
+            key_finder+=sstring[i];
+        }
+        if(zap_count+1>n)
+            break;
+    }
+    return key_finder;
+}
+int sort_by_column(string name, string parameter)
+{
+    ifstream in;
+    in.open(name,ios_base::in);
+    if(in.is_open())
+    {
+        string scolumns;
+        getline(in,scolumns);
+        my_column* columns = get_parameters(scolumns);
+        int n_col;
+        for(int i=0;i<columns[0].n;i++)
+        {
+            if (columns[i].name==parameter) n_col=i+1;
+        }
+        string temp,last_temp;
+        string key_finder,key_finder_last;
+        ofstream out;
+        out.open("temp", ios_base::trunc);
+        out<<scolumns<<endl;
+
+        while (!in.eof())
+        {
+            getline(in,temp);
+            key_finder=find_column_string(n_col,temp);
+            if (key_finder.size()>0)
+            {
+                if (key_finder.compare(key_finder_last)>=0)
+                {
+                    out<<temp<<endl;
+                }
+                else
+                {
+                    out.close();
+                    ifstream temp_file;
+                    temp_file.open("temp", ios_base::in);
+                    out.open("temp2",ios_base::trunc);
+                    if (temp_file.is_open()&&out.is_open())
+                    {
+                        string temp_file_string;
+                        temp_file>>temp_file_string;
+                        out<<temp_file_string;
+                        int trig = 0;
+                        while (!temp_file.eof())
+                        {
+                            getline(temp_file,temp_file_string);
+                            string temp_finder;
+                            temp_finder=find_column_string(n_col,temp_file_string);
+                            if (key_finder.compare(temp_finder)>=0 || trig == 1)
+                            {
+                                out<<temp_file_string<<endl;
+                            }
+                            else
+                            {
+                                out<<temp<<endl;
+                                out<<temp_file_string<<endl;
+                                trig=1;
+                            }
+                        }
+                        out.close();
+                        temp_file.close();
+                        out.open("temp",ios_base::out);
+                        //while (temp!=)
+                    }
+                    else error(1212211212);
+
+                }
+            }
+            key_finder_last=key_finder;
+            last_temp=temp;
+        }
+        in.close();
+        out.close();
+        delete_table(name);
+        rename("temp",name.c_str());
+    } else error(12);
+    return 0;
+}
 
 void delete_row(string name, string parameter)
 {
@@ -214,22 +310,8 @@ void delete_row(string name, string parameter)
         while (!in.eof())
         {
             getline(in,temp);
-            int zap_count=0;
-            string key_finder;
-            for (int i=0;i<temp.size();i++)
-            {
-                if (temp[i]==',')
-                {
-                    zap_count++;
-                }
-                else if(zap_count+1==n_col)
-                {
-                    key_finder+=temp[i];
-                }
-                if(zap_count+1>n_col) 
-                    break;
-            }
-            if (zap_count == n_col)
+            string key_finder=find_column_string(n_col,temp);
+            if (key_finder.size()>0)
             {
                 if (key_finder!=key)
                 {

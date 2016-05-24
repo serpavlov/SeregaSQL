@@ -86,6 +86,10 @@ int main(int argc, char* argv[])
                     CASE ("select"):
                        // http://www.cplusplus.com/reference/sstream/istringstream/istringstream/
                         //while(myfile>>temp)
+                        string tablename;
+                        myFile>>tablename;
+                        myFile>>temp;
+                        sort_by_column(tablename,temp);
                         break;
                     DEFAULT:
                         error(1);
