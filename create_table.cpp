@@ -74,7 +74,7 @@ my_column* get_parameters(string line)
                         ttype.clear();
                         col_count++;
                     }
-                    else break;//спорный момент
+                    else break;//спорный момент лучше ретурн
                 }
             }
         }
