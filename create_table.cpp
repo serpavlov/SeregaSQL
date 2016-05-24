@@ -192,7 +192,7 @@ void delete_row(string name, string parameter)
         int n;
         for (n=0;n<parameter.size();n++)
         {
-            if (parameter[i]!='=')
+            if (parameter[n]!='=')
             {
                 column+=parameter[n];
             }
