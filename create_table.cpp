@@ -178,6 +178,7 @@ int insert_row(string name, string srow)
     return 0;
 }
 
+
 void delete_row(string name, string parameter)
 {
     ifstream in;
@@ -188,61 +189,57 @@ void delete_row(string name, string parameter)
         getline(in,scolumns);
         my_column* columns = get_parameters(scolumns);
         string column,key;
-        int n=0;
-        for (int i=0;i<parameter.size();i++)
+        int n;
+        for (n=0;n<parameter.size();n++)
         {
             if (parameter[i]!='=')
             {
-                column+=parameter[i];
-                n++;
+                column+=parameter[n];
             }
             else break;
         }
-        if (n < parameter.size()-1)
+        for (int i=n+1;i<parameter.size();i++)
         {
-            int n_col;
-            for(int i=0;i<columns[0].n;i++)
+            key+=parameter[i];
+        }
+        int n_col;
+        for(int i=0;i<columns[0].n;i++)
+        {
+            if (columns[i].name==column) n_col=i+1;
+        }
+        string temp;
+        ofstream out;
+        out.open("temp", ios_base::trunc);
+        out<<scolumns<<endl;
+        while (!in.eof())
+        {
+            getline(in,temp);
+            int zap_count=0;
+            string key_finder;
+            for (int i=0;i<temp.size();i++)
             {
-                if (columns[i].name==column) n_col=i+1;
-            }
-            for (int i=n+1;i<parameter.size();i++)
-            {
-                 key+=parameter[i];
-            }
-           string temp;
-           ofstream out;
-           out.open("temp", ios_base::trunc);
-           out<<scolumns<<endl;
-           while (!in.eof())
-            {
-                getline(in,temp);
-                int zap_count=0;
-                string key_finder;
-                for (int i=0;i<temp.size();i++)
+                if (temp[i]==',')
                 {
-                    if (temp[i]==',')
-                    {
-                        zap_count++;
-                    }
-                    else
-                    if(zap_count+1==n_col)
-                    {
-                        key_finder+=temp[i];
-                    }
-                    if(zap_count+1>n_col) break;
-                 }
-                if (zap_count == n_col)
+                    zap_count++;
+                }
+                else if(zap_count+1==n_col)
                 {
-                    if (key_finder!=key)
-                    {
-                        out<<temp<<endl;
-                    }
-                 }
-               }
-               in.close();
-               out.close();
-               delete_table(name);
-               rename("temp",name.c_str());
-        }else error(11);
+                    key_finder+=temp[i];
+                }
+                if(zap_count+1>n_col) 
+                    break;
+            }
+            if (zap_count == n_col)
+            {
+                if (key_finder!=key)
+                {
+                    out<<temp<<endl;
+                }
+            }
+        }
+        in.close();
+        out.close();
+        delete_table(name);
+        rename("temp",name.c_str());
     } else error(12);
 }

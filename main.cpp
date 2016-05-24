@@ -84,6 +84,8 @@ int main(int argc, char* argv[])
                         }
                         break;
                     CASE ("select"):
+                        http://www.cplusplus.com/reference/sstream/istringstream/istringstream/
+                        while(myfile>>temp)
                         break;
                     DEFAULT:
                         error(1);
