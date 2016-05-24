@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include <fstream>
 #include <cstdio>
 #include "my_column.h"
@@ -214,54 +215,71 @@ int sort_by_column(string name, string parameter)
         string temp,last_temp;
         string key_finder,key_finder_last;
         ofstream out;
-        out.open("temp", ios_base::trunc);
+        out.open("temp");
+        cout<<out.is_open()<<"opend?"<<endl;
         out<<scolumns<<endl;
-
+        int pos=out.tellp();
+        cout<<"position in file"<<pos<<endl;
+        getline(in,temp);
+        key_finder_last=find_column_string(n_col,temp);
+        out<<temp<<endl;
+        int nnn=1;
         while (!in.eof())
         {
+            nnn++;
             getline(in,temp);
+            cout<<temp<<endl;
             key_finder=find_column_string(n_col,temp);
+            cout<<key_finder<<" "<<key_finder_last<<endl;
             if (key_finder.size()>0)
             {
-                if (key_finder.compare(key_finder_last)>=0)
+                if (key_finder.compare(key_finder_last)<=0)
                 {
                     out<<temp<<endl;
+                    cout<<"working fine"<<endl;
                 }
                 else
                 {
-                    out.close();
-                    ifstream temp_file;
-                    temp_file.open("temp", ios_base::in);
-                    out.open("temp2",ios_base::trunc);
-                    if (temp_file.is_open()&&out.is_open())
+                    pos=out.tellp();
+                    ifstream out2;
+                    out2.open("temp");
+                    cout<<"position in file"<<pos<<endl;
+                    out.seekp(0);
+                    ofstream temp_file;
+                    temp_file.open("temp2",ios_base::trunc);
+                    cout<<temp_file.is_open()<<endl;
+                    if (temp_file.is_open()&&out2.is_open())
                     {
                         string temp_file_string;
-                        temp_file>>temp_file_string;
-                        out<<temp_file_string;
+                        getline(out2,temp_file_string);
+                        temp_file<<scolumns<<endl;
                         int trig = 0;
-                        while (!temp_file.eof())
+                        while (nnn>0)
                         {
-                            getline(temp_file,temp_file_string);
+                            nnn--;
+                            getline(out2,temp_file_string);
+                            cout<<temp_file_string<<" what is going?"<<endl;
                             string temp_finder;
                             temp_finder=find_column_string(n_col,temp_file_string);
-                            if (key_finder.compare(temp_finder)>=0 || trig == 1)
+                            if (key_finder.compare(temp_finder)<=0 || trig == 1)
                             {
-                                out<<temp_file_string<<endl;
+                                temp_file<<temp_file_string<<endl;
                             }
                             else
                             {
-                                out<<temp<<endl;
-                                out<<temp_file_string<<endl;
+                                temp_file<<temp_file_string<<endl;
+                                temp_file<<temp<<endl;
+                                cout<<temp<<" "<<temp_file_string<<"what THE hELL&&&&"<<endl;
                                 trig=1;
                             }
                         }
-                        out.close();
                         temp_file.close();
-                        out.open("temp",ios_base::out);
+                        delete_table("temp");
+                        rename("temp2","temp");
+                        //out.open("temp",ios_base::in|ios_base::out);
                         //while (temp!=)
                     }
                     else error(1212211212);
-
                 }
             }
             key_finder_last=key_finder;

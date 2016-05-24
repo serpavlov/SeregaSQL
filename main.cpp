@@ -22,49 +22,52 @@ int main(int argc, char* argv[])
             cout<<"Working..."<<endl;
             while (!myFile.eof())
             {
-                string temp,result;
-                myFile>>temp;
+                string inputss,temp,result;
+                getline(myFile,inputss);
+                istringstream iss (inputss);
+
+                iss>>temp;
                 result+=temp+" ";
                 SWITCH (temp)
                 {
                     CASE ("create"):
-                        myFile>>temp;
+                        iss>>temp;
                         result+=temp;
                         if (temp =="table")
                         {
                             string table_name;
-                            myFile.get();
-                            getline(myFile,table_name,'(');
-                            getline(myFile,temp,')');
+                            iss.get();
+                            getline(iss,table_name,'(');
+                            getline(iss,temp,')');
                             result+=table_name+" ";
                             result+=temp;
                             create_table(table_name,temp);
                         }
                         break;
                     CASE ("delete"):
-                        myFile>>temp;
+                        iss>>temp;
                         result+=temp+" ";
                         if (temp =="table")
                         {
-                            myFile>>temp;
+                            iss>>temp;
                             result+=temp;
                             delete_table(temp);
                         }
                         if (temp == "row")
                         {
-                            myFile>>temp;
+                            iss>>temp;
                             result+=temp;
                             if (temp == "from")
                             {
                                 string table_name;
-                                myFile>>table_name;
+                                iss>>table_name;
                                 result+=table_name;
-                                myFile>>temp;
+                                iss>>temp;
                                 result+=temp;
                                 if (temp=="where")
                                 {
-                                    myFile.get();
-                                    getline(myFile,temp);
+                                    iss.get();
+                                    getline(iss,temp);
                                     result+=temp;
                                     delete_row(table_name,temp);
                                 }
@@ -72,29 +75,30 @@ int main(int argc, char* argv[])
                         }
                         break;
                     CASE ("insert"):
-                        myFile>>temp;
+                        iss>>temp;
                         result+=temp;
                         if (temp =="into")
                         {
                             string table_name;
-                            myFile.get();
-                            getline(myFile,table_name,'(');
-                            getline(myFile,temp,')');
+                            iss.get();
+                            getline(iss,table_name,'(');
+                            getline(iss,temp,')');
                             insert_row(table_name,temp);
                         }
                         break;
                     CASE ("select"):
-                       // http://www.cplusplus.com/reference/sstream/istringstream/istringstream/
-                        //while(myfile>>temp)
+                        //while(iss>>temp)
                         string tablename;
-                        myFile>>tablename;
-                        myFile>>temp;
+                        iss>>tablename;
+                        iss>>temp;
                         sort_by_column(tablename,temp);
                         break;
-                    DEFAULT:
+                    /*DEFAULT:
                         error(1);
                         break;
+                        */
                 }
+                result=inputss;
                 cout<<result<<endl;
             }
         }
