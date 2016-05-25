@@ -95,7 +95,7 @@ int create_table(string name, string scolumns)
             out<<columns[i].name<<':'<<columns[i].type;
             if (i < (columns[0].n-1)) out<<',';
         }
-        out<<endl;
+        //out<<endl;
         out.close();
     }
     else error(3);
@@ -162,12 +162,12 @@ int insert_row(string name, string srow)
             if (out.is_open())
             {
 
+                out<<endl;
                 for (int i=0;i<=n;i++)
                 {
                     out<<cols[i];
                     if (i<=n-1) out<<',';
                 }
-                out<<endl;
             }
             else error(3);
             out.close();
@@ -198,6 +198,7 @@ string find_column_string(int n, string sstring)
     }
     return key_finder;
 }
+
 int sort_by_column(string name, string parameter)
 {
     ifstream in;
@@ -216,21 +217,22 @@ int sort_by_column(string name, string parameter)
         string key_finder,key_finder_last;
         ofstream out;
         out.open("temp");
-        cout<<out.is_open()<<"opend?"<<endl;
+        //cout<<out.is_open()<<"opend?"<<endl;
         out<<scolumns<<endl;
         int pos=out.tellp();
-        cout<<"position in file"<<pos<<endl;
-        getline(in,temp);
-        key_finder_last=find_column_string(n_col,temp);
-        out<<temp<<endl;
+        //cout<<"position in file"<<pos<<endl;
+        //getline(in,temp);
+        //key_finder_last=find_column_string(n_col,temp);
+        //out<<temp<<endl;
         int nnn=1;
         while (!in.eof())
         {
             nnn++;
             getline(in,temp);
-            cout<<temp<<endl;
+            //cout<<temp<<endl;
             key_finder=find_column_string(n_col,temp);
-            cout<<key_finder<<" "<<key_finder_last<<endl;
+            cout<<key_finder.compare(key_finder_last)<< key_finder<<" "<<key_finder_last<<endl;
+            //cout<<key_finder<<" "<<key_finder_last<<endl;
             if (key_finder.size()>0)
             {
                 if (key_finder.compare(key_finder_last)<=0)
@@ -254,7 +256,7 @@ int sort_by_column(string name, string parameter)
                         getline(out2,temp_file_string);
                         temp_file<<scolumns<<endl;
                         int trig = 0;
-                        while (nnn>0)
+                        while (nnn>=0)
                         {
                             nnn--;
                             getline(out2,temp_file_string);
@@ -282,11 +284,13 @@ int sort_by_column(string name, string parameter)
                     else error(1212211212);
                 }
             }
+
             key_finder_last=key_finder;
             last_temp=temp;
         }
         in.close();
         out.close();
+
         delete_table(name);
         rename("temp",name.c_str());
     } else error(12);
