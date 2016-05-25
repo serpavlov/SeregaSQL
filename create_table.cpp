@@ -198,7 +198,33 @@ string find_column_string(int n, string sstring)
     }
     return key_finder;
 }
-
+int copy_table(string sname, string oname)
+{
+    ifstream in;
+    in.open(sname,ios_base::in);
+    if(in.is_open())
+    {
+        string scolumns;
+        getline(in,scolumns);
+        my_column* columns = get_parameters(scolumns);
+        ofstream out;
+        out.open(oname);
+        if (out.is_open())
+        {
+            out<<scolumns<<endl;
+            while(!in.eof())
+            {
+                in>>scolumns;
+                out<<scolumns;
+            }
+            in.close();
+            out.close();
+        }
+        else error(13);
+    }
+    else error(12);
+    return 0;
+}
 int sort_by_column(string name, string parameter)
 {
     ifstream in;
@@ -219,80 +245,12 @@ int sort_by_column(string name, string parameter)
         out.open("temp");
         //cout<<out.is_open()<<"opend?"<<endl;
         out<<scolumns<<endl;
-        int pos=out.tellp();
-        //cout<<"position in file"<<pos<<endl;
-        //getline(in,temp);
-        //key_finder_last=find_column_string(n_col,temp);
-        //out<<temp<<endl;
-        int nnn=1;
-        while (!in.eof())
+        while(!in.eof())
         {
-            nnn++;
-            getline(in,temp);
-            //cout<<temp<<endl;
-            key_finder=find_column_string(n_col,temp);
-            cout<<key_finder.compare(key_finder_last)<< key_finder<<" "<<key_finder_last<<endl;
-            //cout<<key_finder<<" "<<key_finder_last<<endl;
-            if (key_finder.size()>0)
-            {
-                if (key_finder.compare(key_finder_last)<=0)
-                {
-                    out<<temp<<endl;
-                    cout<<"working fine"<<endl;
-                }
-                else
-                {
-                    pos=out.tellp();
-                    ifstream out2;
-                    out2.open("temp");
-                    //cout<<"position in file"<<pos<<endl;
-                    out.seekp(0);
-                    ofstream temp_file;
-                    temp_file.open("temp2",ios_base::trunc);
-                    //cout<<temp_file.is_open()<<endl;
-                    if (temp_file.is_open()&&out2.is_open())
-                    {
-                        string temp_file_string;
-                        getline(out2,temp_file_string);
-                        temp_file<<scolumns<<endl;
-                        int trig = 0;
-                        while (nnn>=0)
-                        {
-                            nnn--;
-                            getline(out2,temp_file_string);
-                            cout<<temp_file_string<<" what is going?"<<endl;
-                            string temp_finder;
-                            temp_finder=find_column_string(n_col,temp_file_string);
-                            if (key_finder.compare(temp_finder)<=0 || trig == 1)
-                            {
-                                temp_file<<temp_file_string<<endl;
-                            }
-                            else
-                            {
-                                temp_file<<temp_file_string<<endl;
-                                temp_file<<temp<<endl;
-                                cout<<temp<<" "<<temp_file_string<<"what THE hELL&&&&"<<endl;
-                                trig=1;
-                            }
-                        }
-                        temp_file.close();
-                        out2.close();
-                        delete_table("temp");
-                        rename("temp2","temp");
-                        out.seekp(pos+temp.size());
-                        //out.open("temp",ios_base::ios_base::out);
-                        //while (temp!=)
-                    }
-                    else error(1212211212);
-                }
-            }
 
-            key_finder_last=key_finder;
-            last_temp=temp;
         }
         in.close();
         out.close();
-
         delete_table(name);
         rename("temp",name.c_str());
     } else error(12);
