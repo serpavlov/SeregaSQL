@@ -230,7 +230,7 @@ int sort_by_column(string name, string parameter)
             getline(in,temp);
             cout<<temp<<endl;
             key_finder=find_column_string(n_col,temp);
-            cout<<key_finder<<" "<<key_finder_last<<endl;
+            cout<<key_finder.compare(key_finder_last)<<key_finder<<" "<<key_finder_last<<endl;
             if (key_finder.size()>0)
             {
                 if (key_finder.compare(key_finder_last)<=0)
@@ -243,11 +243,11 @@ int sort_by_column(string name, string parameter)
                     pos=out.tellp();
                     ifstream out2;
                     out2.open("temp");
-                    cout<<"position in file"<<pos<<endl;
+                    //cout<<"position in file"<<pos<<endl;
                     out.seekp(0);
                     ofstream temp_file;
                     temp_file.open("temp2",ios_base::trunc);
-                    cout<<temp_file.is_open()<<endl;
+                    //cout<<temp_file.is_open()<<endl;
                     if (temp_file.is_open()&&out2.is_open())
                     {
                         string temp_file_string;
@@ -274,9 +274,11 @@ int sort_by_column(string name, string parameter)
                             }
                         }
                         temp_file.close();
+                        out2.close();
                         delete_table("temp");
                         rename("temp2","temp");
-                        //out.open("temp",ios_base::in|ios_base::out);
+                        out.seekp(pos+temp.size());
+                        //out.open("temp",ios_base::ios_base::out);
                         //while (temp!=)
                     }
                     else error(1212211212);
