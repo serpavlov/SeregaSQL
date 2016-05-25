@@ -200,22 +200,20 @@ string find_column_string(int n, string sstring)
 }
 int copy_table(string sname, string oname)
 {
-    ifstream in;
+    /*ifstream in;
     in.open(sname,ios_base::in);
     if(in.is_open())
     {
         string scolumns;
-        getline(in,scolumns);
-        my_column* columns = get_parameters(scolumns);
         ofstream out;
-        out.open(oname);
+        out.open(oname, ios_base::trunc | ios_base::out);
         if (out.is_open())
         {
             out<<scolumns<<endl;
             while(!in.eof())
             {
-                in>>scolumns;
-                out<<scolumns;
+                getline(in,scolumns);
+                out<<scolumns<<endl;
             }
             in.close();
             out.close();
@@ -223,7 +221,8 @@ int copy_table(string sname, string oname)
         else error(13);
     }
     else error(12);
-    return 0;
+    return 0;*/
+    //not working now
 }
 int sort_by_column(string name, string parameter)
 {
@@ -239,20 +238,106 @@ int sort_by_column(string name, string parameter)
         {
             if (columns[i].name==parameter) n_col=i+1;
         }
-        string temp,last_temp;
-        string key_finder,key_finder_last;
+        string temp,key_finder,min_key,max_key;
         ofstream out;
-        out.open("temp");
-        //cout<<out.is_open()<<"opend?"<<endl;
+        out.open("temp",ios_base::trunc | ios_base::out);
         out<<scolumns<<endl;
+        in>>temp;
+        key_finder=find_column_string(n_col,temp);
+        max_key=min_key=key_finder;
+        out<<temp;
+        out.close();
         while(!in.eof())
         {
+            in >> temp;
+            //cout<<temp<<endl;
+            key_finder = find_column_string(n_col,temp);
+            if (key_finder>=max_key)
+            {
+                cout<<"more";
+                out.open("temp",ios_base::app);
+                //insert_row("temp",temp);
+                out << temp << endl;
+                out.close();
+                max_key=key_finder;
+            }
+            else if (key_finder<=min_key)
+            {
+                cout<<"less";
+                min_key=key_finder;
+                ofstream out2;
+                out2.open("temp2",ios_base::trunc | ios_base::out);
+                //cout<<"out state is "<<out.good()<<endl;
+                //out.close();
+                ifstream in2;
+                in2.open("temp",ios_base::in);
+                string temp2;
+                if (out2.is_open() && in2.good())
+                {
+                    getline(in2,temp2);
+                    out2<<temp2<<endl;
+                    //insert_row("temp",temp);
+                    out2<<temp<<endl;
+                    while (!in2.eof())
+                    {
+                        getline(in2,temp2);
+                        //insert_row("temp",temp2);
+                        out2<<temp2<<endl;
+                    }
+                    out2.close();
+                    in2.close();
+                    delete_table("temp");
+                    rename("temp2","temp");
+                }
+            }
+            else
+            {
 
+                cout<<"hz"<<endl;
+
+                ofstream out2;
+                out2.open("temp2",ios_base::trunc | ios_base::out);
+                //cout<<"out state is "<<out.good()<<endl;
+                //out.close();
+                ifstream in2;
+                in2.open("temp",ios_base::in);
+                string temp2,key_finder2,key_finder2_last=key_finder;
+                int trig=0;
+                if (out2.is_open() && in2.good())
+                {
+                    getline(in2,temp2);
+                    out2<<temp2<<endl;
+                    while (!in2.eof())
+                    {
+                        getline(in2,temp2);
+                        key_finder2 = find_column_string(n_col,temp2);
+                        if (key_finder<=key_finder2 && trig==0)
+                        {
+                            cout<< temp <<" rule is working, but "<<key_finder<<" < "<<key_finder2<< endl;
+                            //insert_row("temp2",temp);
+                            out2<<temp<<endl;
+                            trig=1;
+                        }
+                        cout<<temp2<<endl;
+                        //insert_row("temp2",temp2);
+                        out2<<temp2<<endl;
+
+                        key_finder2_last=key_finder2;
+                    }
+                    out2.close();
+                    in2.close();
+                    delete_table("temp");
+                    rename("temp2","temp");
+
+                }else error(1234);
+                //out.close();
+                //out.open("temp",ios_base::ate);
+            }
         }
         in.close();
         out.close();
-        delete_table(name);
-        rename("temp",name.c_str());
+        //delete_table(name);
+        //rename("temp",name.c_str());
     } else error(12);
     return 0;
 }
@@ -287,7 +372,7 @@ void delete_row(string name, string parameter)
         }
         string temp;
         ofstream out;
-        out.open("temp", ios_base::trunc);
+        out.open("temp", ios_base::trunc | ios_base::trunc);
         out<<scolumns<<endl;
         while (!in.eof())
         {
