@@ -18,7 +18,7 @@ void delete_table(string tablename)
     out.open(tablename, ios_base::trunc);
     out.close();
     if (remove(tablename.c_str())!=0)
-        error(12);
+        error(202);
 }
 
 bool is_valid_type(string stype)

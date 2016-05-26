@@ -102,7 +102,7 @@ int main(int argc, char* argv[])
                         iss>>temp;
                         while(temp=="add")
                         {
-                            iss>>tablename;
+                            //iss>>tablename;
 
                             iss>>swistr;
                             SWITCH (swistr)
@@ -112,7 +112,7 @@ int main(int argc, char* argv[])
                                     if (temp == "by")
                                     {
                                         iss>>temp;
-                                        sort_by_column("temp",temp);
+                                        sort_by_column(tablename,temp);
                                     }
                                     break;
                                 CASE ("add"):
