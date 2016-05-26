@@ -248,13 +248,13 @@ int sort_by_column(string name, string parameter)
         //ofstream out;
         //out.open("temp",ios_base::trunc | ios_base::out);
         //out<<scolumns<<endl;
-        create_table("temp",scolumns);
         in>>temp;
-        key_finder=find_column_string(n_col,temp);
-        max_key=min_key=key_finder;
+        create_table("temp",scolumns);
         insert_row("temp",temp);
         //out<<temp;
         //out.close();
+        key_finder=find_column_string(n_col,temp);
+        max_key=min_key=key_finder;
         while(!in.eof())
         {
             in >> temp;
@@ -262,16 +262,16 @@ int sort_by_column(string name, string parameter)
             key_finder = find_column_string(n_col,temp);
             if (key_finder>=max_key)
             {
-                cout<<"more";
-                //out.open("temp",ios_base::app);
+                cout<<"more"<<endl;
                 insert_row("temp",temp);
+                //out.open("temp",ios_base::app);
                 //out << temp << endl;
                 //out.close();
                 max_key=key_finder;
             }
             else if (key_finder<=min_key)
             {
-                cout<<"less";
+                cout<<"less"<<endl;
                 min_key=key_finder;
                 //ofstream out2;
                 //out2.open("temp2",ios_base::trunc | ios_base::out);
