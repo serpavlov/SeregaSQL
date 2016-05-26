@@ -83,23 +83,30 @@ my_column* get_parameters(string line)
     return array;
 }
 
-int create_table(string name, string scolumns)
+bool create_table(string name, string scolumns)
 {
-    ofstream out;
-    out.open(name,ios_base::out);//можно добавить невозможность перезаписать таблицу
-    if (out.is_open())
+    ifstream in;
+    in.open(name,ios_base::in);
+    if (!in.is_open())
     {
-        my_column* columns = get_parameters(scolumns);
-        for (int i=0;i<columns[0].n;i++)
+        ofstream out;
+        out.open(name,ios_base::out);//можно добавить невозможность перезаписать таблицу
+        if (out.is_open())
         {
-            out<<columns[i].name<<':'<<columns[i].type;
-            if (i < (columns[0].n-1)) out<<',';
+            my_column* columns = get_parameters(scolumns);
+            for (int i=0;i<columns[0].n;i++)
+            {
+                out<<columns[i].name<<':'<<columns[i].type;
+                if (i < (columns[0].n-1)) out<<',';
+            }
+            //out<<endl;
+            out.close();
+            return true;
         }
-        //out<<endl;
-        out.close();
+        else error(3);
     }
-    else error(3);
-    return 0;
+    else error(201);
+    return false;
 }
 
 bool check_type(string stype, string srow)
@@ -200,28 +207,27 @@ string find_column_string(int n, string sstring)
 }
 int copy_table(string sname, string oname)
 {
-    /*ifstream in;
+    ifstream in;
     in.open(sname,ios_base::in);
+    int i=1;
     if(in.is_open())
     {
         string scolumns;
-        ofstream out;
-        out.open(oname, ios_base::trunc | ios_base::out);
-        if (out.is_open())
+        getline(in,scolumns);
+        //create_table(oname,scolumns);
+        cout<<"creating table"<<endl;
+        if (create_table(oname,scolumns))
+        while(!in.eof())
         {
-            out<<scolumns<<endl;
-            while(!in.eof())
-            {
-                getline(in,scolumns);
-                out<<scolumns<<endl;
-            }
-            in.close();
-            out.close();
+            getline(in,scolumns);
+            cout<<"inserting "<<i<<" row"<<endl;
+            insert_row(oname,scolumns);
+            i++;
         }
-        else error(13);
+        in.close();
     }
-    else error(12);
-    return 0;*/
+    else error(200);
+    return 0;
     //not working now
 }
 int sort_by_column(string name, string parameter)
@@ -239,14 +245,16 @@ int sort_by_column(string name, string parameter)
             if (columns[i].name==parameter) n_col=i+1;
         }
         string temp,key_finder,min_key,max_key;
-        ofstream out;
-        out.open("temp",ios_base::trunc | ios_base::out);
-        out<<scolumns<<endl;
+        //ofstream out;
+        //out.open("temp",ios_base::trunc | ios_base::out);
+        //out<<scolumns<<endl;
+        create_table("temp",scolumns);
         in>>temp;
         key_finder=find_column_string(n_col,temp);
         max_key=min_key=key_finder;
-        out<<temp;
-        out.close();
+        insert_row("temp",temp);
+        //out<<temp;
+        //out.close();
         while(!in.eof())
         {
             in >> temp;
@@ -255,58 +263,62 @@ int sort_by_column(string name, string parameter)
             if (key_finder>=max_key)
             {
                 cout<<"more";
-                out.open("temp",ios_base::app);
-                //insert_row("temp",temp);
-                out << temp << endl;
-                out.close();
+                //out.open("temp",ios_base::app);
+                insert_row("temp",temp);
+                //out << temp << endl;
+                //out.close();
                 max_key=key_finder;
             }
             else if (key_finder<=min_key)
             {
                 cout<<"less";
                 min_key=key_finder;
-                ofstream out2;
-                out2.open("temp2",ios_base::trunc | ios_base::out);
+                //ofstream out2;
+                //out2.open("temp2",ios_base::trunc | ios_base::out);
+
                 //cout<<"out state is "<<out.good()<<endl;
                 //out.close();
                 ifstream in2;
                 in2.open("temp",ios_base::in);
                 string temp2;
-                if (out2.is_open() && in2.good())
+                if (in2.good())
                 {
                     getline(in2,temp2);
-                    out2<<temp2<<endl;
-                    //insert_row("temp",temp);
-                    out2<<temp<<endl;
+                    create_table("temp2",temp2);
+                    //out2<<temp2<<endl;
+                    insert_row("temp2",temp);
+                    //out2<<temp<<endl;
                     while (!in2.eof())
                     {
                         getline(in2,temp2);
-                        //insert_row("temp",temp2);
-                        out2<<temp2<<endl;
+                        insert_row("temp2",temp2);
+                        //out2<<temp2<<endl;
                     }
-                    out2.close();
+                    //out2.close();
                     in2.close();
                     delete_table("temp");
-                    rename("temp2","temp");
+                    copy_table("temp2","temp");
+                    delete_table("temp2");
                 }
             }
             else
             {
-
                 cout<<"hz"<<endl;
 
-                ofstream out2;
-                out2.open("temp2",ios_base::trunc | ios_base::out);
+                //ofstream out2;
+                //out2.open("temp2",ios_base::trunc | ios_base::out);
                 //cout<<"out state is "<<out.good()<<endl;
                 //out.close();
                 ifstream in2;
                 in2.open("temp",ios_base::in);
                 string temp2,key_finder2,key_finder2_last=key_finder;
                 int trig=0;
-                if (out2.is_open() && in2.good())
+                if (in2.good())
                 {
+
                     getline(in2,temp2);
-                    out2<<temp2<<endl;
+                    create_table("temp2",temp2);
+                    //out2<<temp2<<endl;
                     while (!in2.eof())
                     {
                         getline(in2,temp2);
@@ -314,17 +326,17 @@ int sort_by_column(string name, string parameter)
                         if (key_finder<=key_finder2 && trig==0)
                         {
                             cout<< temp <<" rule is working, but "<<key_finder<<" < "<<key_finder2<< endl;
-                            //insert_row("temp2",temp);
-                            out2<<temp<<endl;
+                            insert_row("temp2",temp);
+                            //out2<<temp<<endl;
                             trig=1;
                         }
                         cout<<temp2<<endl;
-                        //insert_row("temp2",temp2);
-                        out2<<temp2<<endl;
+                        insert_row("temp2",temp2);
+                        //out2<<temp2<<endl;
 
                         key_finder2_last=key_finder2;
                     }
-                    out2.close();
+                    //out2.close();
                     in2.close();
                     delete_table("temp");
                     rename("temp2","temp");
@@ -335,7 +347,7 @@ int sort_by_column(string name, string parameter)
             }
         }
         in.close();
-        out.close();
+        //out.close();
         //delete_table(name);
         //rename("temp",name.c_str());
     } else error(12);
@@ -371,9 +383,10 @@ void delete_row(string name, string parameter)
             if (columns[i].name==column) n_col=i+1;
         }
         string temp;
-        ofstream out;
-        out.open("temp", ios_base::trunc | ios_base::trunc);
-        out<<scolumns<<endl;
+        //ofstream out;
+        //out.open("temp", ios_base::trunc | ios_base::trunc);
+        //out<<scolumns<<endl;
+        create_table("temp",scolumns);
         while (!in.eof())
         {
             getline(in,temp);
@@ -382,13 +395,16 @@ void delete_row(string name, string parameter)
             {
                 if (key_finder!=key)
                 {
-                    out<<temp<<endl;
+                    //out<<temp<<endl;
+                    insert_row("temp",temp);
                 }
             }
         }
         in.close();
-        out.close();
+        //out.close();
         delete_table(name);
-        rename("temp",name.c_str());
+        copy_table("temp",name);
+        delete_table("temp");
+        //rename("temp",name.c_str());
     } else error(12);
 }

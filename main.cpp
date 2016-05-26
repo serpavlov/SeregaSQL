@@ -86,17 +86,52 @@ int main(int argc, char* argv[])
                             insert_row(table_name,temp);
                         }
                         break;
+                    CASE ("copy"):
+                            iss>>temp;
+                            result+=temp;
+                            if (temp =="table")
+                            {
+                                string table_name1,table_name2;
+                                iss>>table_name1>>table_name2;
+                                copy_table(table_name1,table_name2);
+                            }
+                            break;
                     CASE ("select"):
-                        //while(iss>>temp)
-                        string tablename;
+                        string tablename, swistr;
                         iss>>tablename;
                         iss>>temp;
-                        sort_by_column(tablename,temp);
+                        while(temp=="add")
+                        {
+                            iss>>tablename;
+
+                            iss>>swistr;
+                            SWITCH (swistr)
+                            {
+                                CASE ("sort"):
+                                    iss>>temp;
+                                    if (temp == "by")
+                                    {
+                                        iss>>temp;
+                                        sort_by_column("temp",temp);
+                                    }
+                                    break;
+                                CASE ("add"):
+                                    iss>>temp;
+                                    if (temp == "by")
+                                    {
+                                        iss>>temp;
+                                        sort_by_column("temp",temp);
+                                    }
+                                    break;
+                            }
+                            iss>>temp;
+                        }
                         break;
+
                     /*DEFAULT:
                         error(1);
-                        break;
-                        */
+                        break;*/
+
                 }
                 result=inputss;
                 cout<<result<<endl;
