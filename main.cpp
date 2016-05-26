@@ -100,6 +100,7 @@ int main(int argc, char* argv[])
                         string tablename, swistr;
                         iss>>tablename;
                         iss>>temp;
+                        int limit=0;
                         while(temp=="add")
                         {
                             //iss>>tablename;
@@ -115,19 +116,15 @@ int main(int argc, char* argv[])
                                         sort_by_column(tablename,temp);
                                     }
                                     break;
-                                CASE ("add"):
-                                    iss>>temp;
-                                    if (temp == "by")
-                                    {
-                                        iss>>temp;
-                                        sort_by_column("temp",temp);
-                                    }
+                                CASE ("limit"):
+                                    iss>>limit;
+                                    if (limit<=0) error(101);
                                     break;
                             }
                             iss>>temp;
                         }
+                        //select_table(limit);
                         break;
-
                     /*DEFAULT:
                         error(1);
                         break;*/
