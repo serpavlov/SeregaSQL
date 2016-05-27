@@ -161,7 +161,7 @@ int main(int argc, char* argv[])
                         string tablename, swistr;
                         iss>>tablename;
                         iss>>temp;
-                        int limit=0;
+                        int limit=-2;
                         copy_table(tablename,"temp");
                         while(temp=="add" && !is_error && iss.good())
                         {

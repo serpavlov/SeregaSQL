@@ -367,27 +367,85 @@ void select(string name, int limit)
     in.open(name,ios_base::in);
     if(in.is_open())
     {
-        int i=1;
-        bool all=false;
-        while(!in.eof() && !all)
+        int i=0;
+        my_column* columns;
+        string scolumns,temp;
+        getline(in,scolumns);
+        columns = get_parameters(scolumns);
+        int columns_size[columns[0].n];
+        for (int i=0; i < columns[0].n; i++)
         {
-            if ( limit <= 0 ) all = false;
-            else if (i <= limit) all = false;
-            else all = true;
+            columns_size[i] = 0;
+        }
+        in.seekg(ios_base::beg);
+        while (!in.eof())
+        {
+            getline(in,temp);
+            int counter=0;
+            int sizing=0;
+            for (int i=0; i<temp.size();i++)
+            {
+                if (temp[i] == ',')
+                {
+                    counter++;
+                    sizing=0;
+                }
+                else
+                {
+                    sizing++;
+                    if (sizing > columns_size[counter])
+                    {
+                        columns_size[counter]=sizing;
+                    }
+                }
+            }
+        }
+        in.seekg(ios_base::beg);
+        while(!in.eof() && (limit<-1 || limit>=0))
+        {
+            limit--;
             string temp,result;
             getline (in, temp);
             result+=" | ";
+            int k=0,m=0;
             for (int j=0; j<temp.size();j++)
             {
-                if (temp[j]!=',')
-                    result+=temp[j];
+                if (temp[j]==',' || j==temp.size()-1)
+                {
+                    if (j==temp.size()-1)
+                    {
+                        result+=temp[j];
+                        m++;
+                    }
+                    for (int i=columns_size[k] - m;i>=0;i--)
+                    {
+                        result+=" ";
+                    }
+                    result+=" | ";
+                    k++;
+                    m=0;
+                }
                 else
-                    result+="\t| ";
+                {
+                    result+=temp[j];
+                    m++;
+                }
             }
-            result+=" |";
-            cout << result << endl;
+            if (i==0)
+            {
+                int z=result.size();
+                result+="\n";
+                for (int i=0; i < z; i++)
+                {
+                    result+="=";
+                }
+                i++;
+                cout << endl<< result;
+            }
+            else cout << endl<< result << endl;
         }
         in.close();
+        cout<<endl;
     }
     else error(203);
 }
