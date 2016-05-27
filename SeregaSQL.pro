@@ -1,5 +1,4 @@
 CONFIG += c++11
-QMAKE_CXXFLAGS+=-std=c++11
 TARGET = SeregaSQL
 CONFIG += console
 CONFIG -= app_bundle
