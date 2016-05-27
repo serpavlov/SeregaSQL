@@ -18,7 +18,7 @@ void delete_table(string tablename)
     out.open(tablename, ios_base::trunc);
     out.close();
     if (remove(tablename.c_str())!=0)
-        error(202);
+        error(2021);
 }
 
 bool is_valid_type(string stype)
@@ -75,7 +75,7 @@ my_column* get_parameters(string line)
                         ttype.clear();
                         col_count++;
                     }
-                    else break;//спорный момент лучше ретурн
+                    else break;
                 }
             }
         }
@@ -90,7 +90,7 @@ bool create_table(string name, string scolumns)
     if (!in.is_open())
     {
         ofstream out;
-        out.open(name,ios_base::out);//можно добавить невозможность перезаписать таблицу
+        out.open(name,ios_base::out);
         if (out.is_open())
         {
             my_column* columns = get_parameters(scolumns);
@@ -99,13 +99,12 @@ bool create_table(string name, string scolumns)
                 out<<columns[i].name<<':'<<columns[i].type;
                 if (i < (columns[0].n-1)) out<<',';
             }
-            //out<<endl;
             out.close();
             return true;
         }
         else error(3);
     }
-    else error(201);
+    else error(2012);
     return false;
 }
 
@@ -214,13 +213,10 @@ int copy_table(string sname, string oname)
     {
         string scolumns;
         getline(in,scolumns);
-        //create_table(oname,scolumns);
-        cout<<"creating table"<<endl;
         if (create_table(oname,scolumns))
         while(!in.eof())
         {
             getline(in,scolumns);
-            cout<<"inserting "<<i<<" row"<<endl;
             insert_row(oname,scolumns);
             i++;
         }
@@ -255,13 +251,11 @@ int sort_by_column(string name, string parameter)
             key_finder = find_column_string(n_col,temp);
             if (key_finder>=max_key)
             {
-                cout<<"more"<<endl;
                 insert_row("temp_sort",temp);
                 max_key=key_finder;
             }
             else if (key_finder<=min_key)
             {
-                cout<<"less"<<endl;
                 min_key=key_finder;
                 ifstream in2;
                 in2.open("temp_sort",ios_base::in);
@@ -284,14 +278,12 @@ int sort_by_column(string name, string parameter)
             }
             else
             {
-                cout<<"hz"<<endl;
                 ifstream in2;
                 in2.open("temp_sort",ios_base::in);
                 string temp2,key_finder2;
                 int trig=0;
                 if (in2.good())
                 {
-
                     getline(in2,temp2);
                     create_table("temp2",temp2);
                     while (!in2.eof())
@@ -300,15 +292,14 @@ int sort_by_column(string name, string parameter)
                         key_finder2 = find_column_string(n_col,temp2);
                         if (key_finder<=key_finder2 && trig==0)
                         {
-                            cout<< temp <<" rule is working, but "<<key_finder<<" < "<<key_finder2<< endl;
                             insert_row("temp2",temp);
                             trig=1;
                         }
-                        cout<<temp2<<endl;
                         insert_row("temp2",temp2);
                     }
                     in2.close();
                     delete_table("temp_sort");
+                    copy_table("temp2","temp_sort");
                     rename("temp2","temp_sort");
 
                 }else error(1234);
@@ -318,7 +309,7 @@ int sort_by_column(string name, string parameter)
         delete_table(name);
         copy_table("temp_sort",name);
         delete_table("temp_sort");
-    } else error(12);
+    } else error(201);
     return 0;
 }
 
@@ -351,9 +342,6 @@ void delete_row(string name, string parameter)
             if (columns[i].name==column) n_col=i+1;
         }
         string temp;
-        //ofstream out;
-        //out.open("temp", ios_base::trunc | ios_base::trunc);
-        //out<<scolumns<<endl;
         create_table("temp",scolumns);
         while (!in.eof())
         {
@@ -363,16 +351,43 @@ void delete_row(string name, string parameter)
             {
                 if (key_finder!=key)
                 {
-                    //out<<temp<<endl;
                     insert_row("temp",temp);
                 }
             }
         }
         in.close();
-        //out.close();
         delete_table(name);
         copy_table("temp",name);
         delete_table("temp");
-        //rename("temp",name.c_str());
-    } else error(12);
+    } else error(2023);
+}
+void select(string name, int limit)
+{
+    ifstream in;
+    in.open(name,ios_base::in);
+    if(in.is_open())
+    {
+        int i=1;
+        bool all=false;
+        while(!in.eof() && !all)
+        {
+            if ( limit <= 0 ) all = false;
+            else if (i <= limit) all = false;
+            else all = true;
+            string temp,result;
+            getline (in, temp);
+            result+=" | ";
+            for (int j=0; j<temp.size();j++)
+            {
+                if (temp[j]!=',')
+                    result+=temp[j];
+                else
+                    result+="\t| ";
+            }
+            result+=" |";
+            cout << result << endl;
+        }
+        in.close();
+    }
+    else error(203);
 }
