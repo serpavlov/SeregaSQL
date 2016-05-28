@@ -6,8 +6,9 @@ CONFIG -= app_bundle
 TEMPLATE = app
 
 SOURCES += main.cpp \
-    create_table.cpp \
-    errors.cpp
+    errors.cpp \
+    functions.cpp \
+    errors_c.cpp
 
 HEADERS += \
     my_column.h

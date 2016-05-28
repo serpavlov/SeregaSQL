@@ -2,10 +2,12 @@
 #include <fstream>
 #include "str_switch.h"
 //#include "my_column.h"
-#include "create_table.cpp"
-//#include "errors.cpp"
-
+#include "functions.cpp"
+#include "errors.cpp"
 using namespace std;
+int counter=0;
+
+
 
 
 int main(int argc, char* argv[])
@@ -207,7 +209,7 @@ int main(int argc, char* argv[])
                     }
                 }
                 result=inputss;
-                cout<<result<<endl;
+                cout<<counter<<" "<<result<<endl;
             }
         }
         else

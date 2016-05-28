@@ -5,12 +5,24 @@
 #include "my_column.h"
 //#include "errors.cpp"
 
+void error(int e, int n)
+{
+    /*if (e==100) cout << "["<< counter << "]" <<" You have "<<e<<" error" << endl << "General error in syntax";
+    if (e==101 || e==110) cout << "["<< counter << "]" <<" You have "<<e<<" error" << endl << "Error in create table syntax";
+    if (e==102 || e==103 || e==104) cout << "["<< counter << "]" <<" You have "<<e<<" error" << endl << "Error in delete syntax";
+    if (e==106) cout << "["<< counter << "]" <<" You have "<<e<<" error" << endl << "Error in insert syntax";
+    if (e==107) cout << "["<< counter << "]" <<" You have "<<e<<" error" << endl << "Error in copy syntax";
+    if (e==108) cout << "["<< counter << "]" <<" You have "<<e<<" error" << endl << "Error in sort syntax";
+    if (e==109) cout << "["<< counter << "]" <<" You have "<<e<<" error" << endl << "Error in select syntax";
+    */
+    cout<<"lol";
+}
 using namespace std;
-
+/*
 void error(int e)
 {
     cout<<"You have "<<e<<" error"<<endl;
-}
+}*/
 
 void delete_table(string tablename)
 {
@@ -18,7 +30,7 @@ void delete_table(string tablename)
     out.open(tablename, ios_base::trunc);
     out.close();
     if (remove(tablename.c_str())!=0)
-        error(2021);
+        error(2021,1);
 }
 
 bool is_valid_type(string stype)
@@ -31,7 +43,7 @@ bool is_valid_type(string stype)
     {
         if (stype.compare(types[i])) return true;
     }
-    error(9);
+    error(9,1);
     return false;
 }
 
@@ -46,7 +58,7 @@ my_column* get_parameters(string line)
         if (line[i]==':') kol_count++;
         if (line[i]==',') zap_count++;
     }
-    if (kol_count-1!=zap_count) error(2);
+    if (kol_count-1!=zap_count) error(2,1);
     else
     {
         string tname,ttype;
@@ -102,9 +114,9 @@ bool create_table(string name, string scolumns)
             out.close();
             return true;
         }
-        else error(3);
+        else error(3,1);
     }
-    else error(2012);
+    else error(2012,1);
     return false;
 }
 
@@ -161,7 +173,7 @@ int insert_row(string name, string srow)
             }
             for (int i=0;i<columns[i].n;i++)
             {
-                if (!check_type(columns[i].type,cols[i])) error(9);
+                if (!check_type(columns[i].type,cols[i])) error(9,1);
             }
             ofstream out;
             out.open(name,ios_base::app);
@@ -175,13 +187,13 @@ int insert_row(string name, string srow)
                     if (i<=n-1) out<<',';
                 }
             }
-            else error(3);
+            else error(3,1);
             out.close();
         }
-        else error(4);
+        else error(4,1);
 
     }
-    else error(3);
+    else error(3,1);
     return 0;
 }
 
@@ -222,7 +234,7 @@ int copy_table(string sname, string oname)
         }
         in.close();
     }
-    else error(200);
+    else error(200,1);
     return 0;
 }
 int sort_by_column(string name, string parameter)
@@ -302,14 +314,14 @@ int sort_by_column(string name, string parameter)
                     copy_table("temp2","temp_sort");
                     rename("temp2","temp_sort");
 
-                }else error(1234);
+                }else error(1234,1);
             }
         }
         in.close();
         delete_table(name);
         copy_table("temp_sort",name);
         delete_table("temp_sort");
-    } else error(201);
+    } else error(201,1);
     return 0;
 }
 
@@ -359,7 +371,7 @@ void delete_row(string name, string parameter)
         delete_table(name);
         copy_table("temp",name);
         delete_table("temp");
-    } else error(2023);
+    } else error(2023,1);
 }
 void select(string name, int limit)
 {
@@ -447,5 +459,5 @@ void select(string name, int limit)
         in.close();
         cout<<endl;
     }
-    else error(203);
+    else error(203,1);
 }
